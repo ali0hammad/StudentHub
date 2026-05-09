@@ -83,7 +83,7 @@ def logout_view(request):
 
 @login_required
 def profile(request):
-    profile = request.user.profile
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
     if request.method == 'POST':
         profile.department = request.POST.get('department', '')
         profile.batch = request.POST.get('batch', '')
