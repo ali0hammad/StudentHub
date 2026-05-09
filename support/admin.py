@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import SupportPost, SupportComment, MentorMatching, SocialWallPost
 
-# Register your models here.
+admin.site.register(SupportPost)
+admin.site.register(SupportComment)
+admin.site.register(MentorMatching)
+admin.site.register(SocialWallPost)
