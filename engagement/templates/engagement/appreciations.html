@@ -1,0 +1,39 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2">Anonymous Appreciation</h1>
+    <p class="text-gray-600 mb-6">Thank a classmate, senior, or friend anonymously for their help or kindness.</p>
+
+    <div class="bg-white p-6 rounded shadow mb-8 border border-gray-200">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Who are you appreciating?</label>
+                <input type="text" name="recipient_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="e.g. Ali from CS Dept" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+                <textarea name="content" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="3" placeholder="Thank you for helping me with..." required></textarea>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Send Appreciation</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="space-y-4">
+        {% for app in appreciations %}
+            <div class="bg-white p-6 rounded shadow border-l-4 border-pink-400">
+                <h3 class="font-bold text-pink-600 mb-2">To: {{ app.recipient_name }}</h3>
+                <p class="text-gray-800">{{ app.content }}</p>
+                <div class="text-right mt-2 text-xs text-gray-500">
+                    {{ app.created_at|date:"M d, Y" }}
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-gray-500 text-center py-8">No appreciations yet. Spread some positivity!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

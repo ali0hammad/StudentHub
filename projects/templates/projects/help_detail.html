@@ -1,0 +1,46 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="mb-4">
+        <a href="{% url 'projects:help_list' %}" class="text-blue-600 hover:underline">&larr; Back to Help Zone</a>
+    </div>
+
+    <div class="bg-white p-6 rounded shadow mb-6">
+        <div class="flex justify-between items-start mb-4">
+            <h1 class="text-3xl font-bold">{{ help_req.title }}</h1>
+            {% if help_req.is_resolved %}
+                <span class="bg-green-100 text-green-800 font-bold px-3 py-1 rounded">Resolved</span>
+            {% endif %}
+        </div>
+        <div class="prose max-w-none text-gray-800 mb-4">
+            {{ help_req.description|linebreaks }}
+        </div>
+        <div class="text-sm text-gray-500 border-t pt-4">
+            Requested by {{ help_req.requested_by.first_name|default:help_req.requested_by.email }} on {{ help_req.created_at|date:"M d, Y" }}
+            {% if help_req.course %}| Course: {{ help_req.course.code }}{% endif %}
+        </div>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-4">Responses ({{ help_req.responses.count }})</h2>
+    <div class="space-y-4 mb-8">
+        {% for response in help_req.responses.all %}
+            <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                <p class="text-gray-800 mb-2">{{ response.message|linebreaks }}</p>
+                <p class="text-xs text-gray-500 text-right">- {{ response.responder.first_name|default:response.responder.email }} ({{ response.created_at|date:"M d, Y H:i" }})</p>
+            </div>
+        {% empty %}
+            <p class="text-gray-500">No responses yet. Can you help?</p>
+        {% endfor %}
+    </div>
+
+    <div class="bg-white p-6 rounded shadow">
+        <h3 class="text-lg font-bold mb-4">Add a Response</h3>
+        <form method="post">
+            {% csrf_token %}
+            <textarea name="message" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-4" rows="4" placeholder="Offer your help or guidance..." required></textarea>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit Response</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

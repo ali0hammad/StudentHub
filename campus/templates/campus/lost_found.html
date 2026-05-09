@@ -1,0 +1,31 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Lost and Found</h1>
+    <a href="{% url 'campus:lost_found_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Report Item</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for item in items %}
+        <div class="bg-white p-6 rounded shadow border-l-4 {% if item.item_type == 'lost' %}border-red-500{% else %}border-green-500{% endif %}">
+            <div class="flex justify-between items-start mb-2">
+                <h2 class="text-xl font-bold">{{ item.item_name }}</h2>
+                <span class="text-xs text-white px-2 py-1 rounded font-bold uppercase {% if item.item_type == 'lost' %}bg-red-500{% else %}bg-green-500{% endif %}">
+                    {{ item.get_item_type_display }}
+                </span>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">{{ item.description }}</p>
+            <div class="text-sm text-gray-700">
+                <p><strong>Date:</strong> {{ item.date_lost_found|date:"M d, Y" }}</p>
+                <p><strong>Contact:</strong> {{ item.contact_info }}</p>
+                <p class="text-xs text-gray-400 mt-2">Posted by {{ item.posted_by.first_name }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-span-full">
+            <p class="text-gray-500 text-center py-8">No lost/found items reported.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

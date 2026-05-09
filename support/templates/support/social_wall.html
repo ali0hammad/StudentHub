@@ -1,0 +1,45 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="flex justify-between items-end mb-6 border-b pb-4">
+        <div>
+            <h1 class="text-3xl font-bold">Campus Social Wall</h1>
+            <p class="text-gray-600">The central student feed for UET Lahore.</p>
+        </div>
+        <div class="bg-yellow-100 p-3 rounded border border-yellow-300 max-w-sm">
+            <p class="text-xs text-yellow-800 font-bold uppercase tracking-wide mb-1">Daily Discussion Prompt</p>
+            <p class="text-sm font-medium text-gray-800">"{{ daily_prompt }}"</p>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded shadow mb-8">
+        <form method="post">
+            {% csrf_token %}
+            <textarea name="content" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-4" rows="3" placeholder="What's happening on campus?" required></textarea>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">Post to Wall</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="space-y-6">
+        {% for post in posts %}
+            <div class="bg-white p-6 rounded shadow border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-bold text-xl mr-3">
+                        {{ post.author.first_name|first|default:post.author.email|first|upper }}
+                    </div>
+                    <div>
+                        <p class="font-bold">{{ post.author.first_name|default:post.author.email }}</p>
+                        <p class="text-xs text-gray-500">{{ post.created_at|date:"M d, Y H:i" }}</p>
+                    </div>
+                </div>
+                <p class="text-gray-800 whitespace-pre-wrap">{{ post.content }}</p>
+            </div>
+        {% empty %}
+            <p class="text-gray-500 text-center py-8">The wall is empty. Be the first to post!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

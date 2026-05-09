@@ -1,0 +1,31 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Campus Events</h1>
+    <a href="{% url 'campus:event_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Post Event</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for event in events %}
+        <div class="bg-white rounded shadow-lg overflow-hidden border border-gray-200">
+            <div class="bg-blue-600 text-white px-4 py-2 flex justify-between items-center">
+                <span class="font-bold text-sm uppercase tracking-wide">{{ event.get_event_type_display }}</span>
+                <span class="text-sm">{{ event.date|date:"M d, H:i" }}</span>
+            </div>
+            <div class="p-6">
+                <h2 class="text-xl font-bold mb-2">{{ event.title }}</h2>
+                <p class="text-gray-600 text-sm mb-4">{{ event.description|truncatewords:20 }}</p>
+                <div class="space-y-1 text-sm text-gray-700">
+                    <p>📍 <strong>Location:</strong> {{ event.location }}</p>
+                    <p>👥 <strong>Organizer:</strong> {{ event.organizer }}</p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-span-full">
+            <p class="text-gray-500 text-center py-8">No upcoming events. Check back later!</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

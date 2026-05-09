@@ -1,0 +1,43 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded shadow-md">
+    <h2 class="text-2xl font-bold mb-6">Post a Ride</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Are you offering or seeking?</label>
+            <select name="ride_type" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                {% for value, label in ride_types %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">From</label>
+                <input type="text" name="source" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="e.g. UET Main Gate" required>
+            </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">To</label>
+                <input type="text" name="destination" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="e.g. Anarkali" required>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Departure Time</label>
+                <input type="datetime-local" name="departure_time" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+            </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Available Seats (If offering)</label>
+                <input type="number" name="available_seats" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" min="1" max="10">
+            </div>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Contact Info</label>
+            <input type="text" name="contact_info" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="e.g. WhatsApp number" required>
+        </div>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">Post Ride</button>
+    </form>
+</div>
+{% endblock %}

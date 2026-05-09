@@ -1,0 +1,47 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Project Groups</h1>
+    <a href="{% url 'projects:group_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Create Group</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+        <h2 class="text-2xl font-bold mb-4 border-b pb-2">My Groups</h2>
+        <div class="space-y-4">
+            {% for group in my_groups %}
+            <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
+                <h3 class="text-xl font-bold"><a href="{% url 'projects:group_detail' group.id %}" class="hover:text-blue-600">{{ group.name }}</a></h3>
+                <p class="text-gray-600 text-sm">{{ group.description|truncatewords:15 }}</p>
+                <p class="text-xs text-gray-500 mt-2">{{ group.members.count }} members</p>
+            </div>
+            {% empty %}
+            <p class="text-gray-500">You are not in any groups yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div>
+        <h2 class="text-2xl font-bold mb-4 border-b pb-2">All Groups</h2>
+        <div class="space-y-4">
+            {% for group in groups %}
+            <div class="bg-white p-4 rounded shadow">
+                <h3 class="text-xl font-bold">{{ group.name }}</h3>
+                <p class="text-gray-600 text-sm">{{ group.description|truncatewords:15 }}</p>
+                <div class="mt-4 flex justify-between items-center">
+                    <span class="text-xs text-gray-500">{{ group.members.count }} members</span>
+                    {% if request.user not in group.members.all %}
+                        <a href="{% url 'projects:group_join' group.id %}" class="text-sm bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 px-3 rounded">Join</a>
+                    {% else %}
+                        <a href="{% url 'projects:group_detail' group.id %}" class="text-sm text-blue-600 hover:underline">View</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-500">No project groups created yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

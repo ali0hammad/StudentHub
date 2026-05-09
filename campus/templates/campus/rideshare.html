@@ -1,0 +1,41 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Campus Commute & Rideshare</h1>
+    <a href="{% url 'campus:rideshare_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Offer / Request Ride</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for ride in rides %}
+        <div class="bg-white p-6 rounded shadow border-l-4 {% if ride.ride_type == 'offering' %}border-green-500{% else %}border-yellow-500{% endif %}">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h2 class="text-xl font-bold">{{ ride.source }} &rarr; {{ ride.destination }}</h2>
+                    <span class="text-xs text-gray-600 font-bold uppercase tracking-wide">
+                        {% if ride.ride_type == 'offering' %}🚗 Offering Ride{% else %}🙋‍♂️ Seeking Ride{% endif %}
+                    </span>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-bold text-gray-800">{{ ride.departure_time|date:"M d, H:i" }}</p>
+                </div>
+            </div>
+
+            <div class="text-sm text-gray-700 space-y-1 mb-4">
+                {% if ride.available_seats and ride.ride_type == 'offering' %}
+                    <p><strong>Available Seats:</strong> {{ ride.available_seats }}</p>
+                {% endif %}
+                <p><strong>Contact:</strong> {{ ride.contact_info }}</p>
+            </div>
+
+            <div class="text-xs text-gray-500 border-t pt-2">
+                Posted by {{ ride.posted_by.first_name }}
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-span-full">
+            <p class="text-gray-500 text-center py-8">No rides listed at the moment.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

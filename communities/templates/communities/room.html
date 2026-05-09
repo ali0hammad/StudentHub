@@ -1,0 +1,91 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'communities:department_detail' room.course.department.id %}" class="text-blue-600 hover:underline">&larr; Back to Courses</a>
+    <h1 class="text-3xl font-bold mt-2">Chat Room: {{ room.course.code }} - {{ room.course.name }}</h1>
+    <p class="text-gray-600">{{ room.description }}</p>
+</div>
+
+<div class="bg-white rounded shadow-md border border-gray-200 flex flex-col h-[600px]">
+    <!-- Chat Messages Container -->
+    <div id="chat-log" class="flex-grow p-4 overflow-y-auto bg-gray-50 flex flex-col space-y-4">
+        {% for message in recent_messages %}
+            <div class="flex flex-col {% if message.user == request.user %}items-end{% else %}items-start{% endif %}">
+                <div class="max-w-[70%] rounded-lg px-4 py-2 {% if message.user == request.user %}bg-blue-600 text-white{% else %}bg-gray-200 text-gray-800{% endif %}">
+                    <p class="text-xs {% if message.user == request.user %}text-blue-200{% else %}text-gray-500{% endif %} mb-1">{{ message.user.first_name|default:message.user.email }}</p>
+                    <p>{{ message.content }}</p>
+                </div>
+                <span class="text-xs text-gray-400 mt-1">{{ message.timestamp|date:"M d, Y H:i" }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Chat Input Area -->
+    <div class="p-4 bg-white border-t border-gray-200 flex">
+        <input id="chat-message-input" type="text" class="flex-grow shadow appearance-none border rounded-l py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Type your message here...">
+        <button id="chat-message-submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none focus:shadow-outline">Send</button>
+    </div>
+</div>
+
+<!-- WebSocket Script -->
+{{ room.id|json_script:"room-id" }}
+<script>
+    const roomId = JSON.parse(document.getElementById('room-id').textContent);
+    const currentUser = "{{ request.user.email }}";
+
+    const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+    const chatSocket = new WebSocket(
+        wsProtocol + window.location.host + '/ws/chat/' + roomId + '/'
+    );
+
+    const chatLog = document.querySelector('#chat-log');
+
+    // Scroll to bottom initially
+    chatLog.scrollTop = chatLog.scrollHeight;
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+
+        const isCurrentUser = data.user === currentUser;
+        const alignmentClass = isCurrentUser ? 'items-end' : 'items-start';
+        const bgClass = isCurrentUser ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800';
+        const nameClass = isCurrentUser ? 'text-blue-200' : 'text-gray-500';
+
+        const messageHtml = `
+            <div class="flex flex-col ${alignmentClass}">
+                <div class="max-w-[70%] rounded-lg px-4 py-2 ${bgClass}">
+                    <p class="text-xs ${nameClass} mb-1">${data.user}</p>
+                    <p>${data.message}</p>
+                </div>
+                <span class="text-xs text-gray-400 mt-1">${data.timestamp}</span>
+            </div>
+        `;
+
+        chatLog.insertAdjacentHTML('beforeend', messageHtml);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.key === 'Enter') {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        if(message.trim() !== "") {
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInputDom.value = '';
+        }
+    };
+</script>
+{% endblock %}

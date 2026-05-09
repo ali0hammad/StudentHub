@@ -1,0 +1,31 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2">Anonymous Confession Board</h1>
+    <p class="text-gray-600 mb-6">Share your thoughts, secrets, and fun campus moments entirely anonymously.</p>
+
+    <div class="bg-white p-6 rounded shadow mb-8 border border-gray-200">
+        <form method="post">
+            {% csrf_token %}
+            <textarea name="content" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4" rows="3" placeholder="I have a confession to make..." required></textarea>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Post Confession</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="space-y-4">
+        {% for confession in confessions %}
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded shadow border border-purple-100">
+                <p class="text-gray-800 text-lg italic">"{{ confession.content }}"</p>
+                <div class="text-right mt-4 text-xs text-gray-500">
+                    Shared on {{ confession.created_at|date:"M d, Y" }}
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-gray-500 text-center py-8">No confessions yet. Be the first!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

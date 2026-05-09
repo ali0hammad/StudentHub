@@ -1,0 +1,30 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Peer Help Zone</h1>
+    <a href="{% url 'projects:help_request_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Ask for Help</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for req in requests %}
+    <div class="bg-white p-6 rounded shadow hover:shadow-md transition {% if req.is_resolved %}border-l-4 border-green-500 opacity-75{% else %}border-l-4 border-yellow-500{% endif %}">
+        <div class="flex justify-between items-start mb-2">
+            <h3 class="text-xl font-bold"><a href="{% url 'projects:help_detail' req.id %}" class="hover:text-blue-600">{{ req.title }}</a></h3>
+            {% if req.is_resolved %}
+                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Resolved</span>
+            {% endif %}
+        </div>
+        <p class="text-gray-600 text-sm mb-4">{{ req.description|truncatewords:20 }}</p>
+        <div class="flex justify-between items-center text-xs text-gray-500">
+            <span>By: {{ req.requested_by.first_name }}</span>
+            <span>{{ req.responses.count }} responses</span>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full">
+        <p class="text-gray-500 text-center py-8">No help requests yet. Be the first to ask!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

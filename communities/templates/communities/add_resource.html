@@ -1,0 +1,38 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded shadow-md">
+    <h2 class="text-2xl font-bold mb-6">Add Resource for {{ course.code }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="title">Title</label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="title" type="text" name="title" required>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="resource_type">Resource Type</label>
+            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="resource_type" name="resource_type" required>
+                {% for value, label in resource_types %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="description">Description</label>
+            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" name="description" rows="3"></textarea>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="external_link">Link (Google Drive, Dropbox, etc.)</label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="external_link" type="url" name="external_link" required placeholder="https://...">
+            <p class="text-xs text-gray-500 mt-1">Please provide a valid URL to the resource.</p>
+        </div>
+        <div class="flex items-center justify-between">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                Share Resource
+            </button>
+            <a href="{% url 'communities:course_detail' course.id %}" class="text-gray-600 hover:underline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

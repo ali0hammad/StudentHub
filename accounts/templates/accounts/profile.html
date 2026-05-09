@@ -1,0 +1,45 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded shadow-md">
+    <h2 class="text-2xl font-bold mb-6">Your Profile</h2>
+
+    <div class="mb-6 p-4 bg-gray-50 rounded border">
+        <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="department">Department</label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="department" type="text" name="department" value="{{ profile.department }}">
+            <p class="text-xs text-gray-500 mt-1">e.g., Computer Science, Mechanical Engineering</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="batch">Batch</label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="batch" type="text" name="batch" value="{{ profile.batch }}">
+            <p class="text-xs text-gray-500 mt-1">e.g., 2021</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="hostel">Hostel</label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="hostel" type="text" name="hostel" value="{{ profile.hostel }}">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="mobile_number">Mobile Number (WhatsApp)</label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="mobile_number" type="text" name="mobile_number" value="{{ profile.mobile_number }}">
+            <p class="text-xs text-gray-500 mt-1">Will be shared with matched study partners.</p>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="interests">Interests</label>
+            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="interests" name="interests" rows="3">{{ profile.interests }}</textarea>
+            <p class="text-xs text-gray-500 mt-1">Comma separated (e.g., Coding, Robotics, Sports)</p>
+        </div>
+        <div class="flex items-center justify-between">
+            <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                Save Profile
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

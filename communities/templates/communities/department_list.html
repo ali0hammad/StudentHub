@@ -1,0 +1,20 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="mb-6">
+    <h1 class="text-3xl font-bold">Academic Communities</h1>
+    <p class="text-gray-600">Select a department to view courses and join rooms.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for dept in departments %}
+    <div class="bg-white p-6 rounded shadow hover:shadow-lg transition">
+        <h2 class="text-xl font-bold mb-2">{{ dept.name }}</h2>
+        <p class="text-gray-600 mb-4">{{ dept.description|truncatewords:15 }}</p>
+        <a href="{% url 'communities:department_detail' dept.id %}" class="text-blue-600 hover:underline">View Courses &rarr;</a>
+    </div>
+    {% empty %}
+    <p class="text-gray-500">No departments available yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

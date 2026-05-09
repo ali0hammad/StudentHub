@@ -1,0 +1,45 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-yellow-600 mb-2">🏆 StudentHub Leaderboard</h1>
+        <p class="text-gray-600">Top contributors based on resources shared and peer help provided.</p>
+    </div>
+
+    <div class="bg-white rounded shadow-lg overflow-hidden">
+        <table class="min-w-full">
+            <thead class="bg-gray-800 text-white">
+                <tr>
+                    <th class="py-3 px-6 text-left">Rank</th>
+                    <th class="py-3 px-6 text-left">Student</th>
+                    <th class="py-3 px-6 text-center">Help Given</th>
+                    <th class="py-3 px-6 text-center">Resources Shared</th>
+                    <th class="py-3 px-6 text-center">Total Points</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700">
+                {% for stat in leaders %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-50 {% if forloop.counter <= 3 %}bg-yellow-50{% endif %}">
+                        <td class="py-4 px-6 font-bold text-lg">
+                            {% if forloop.counter == 1 %}🥇
+                            {% elif forloop.counter == 2 %}🥈
+                            {% elif forloop.counter == 3 %}🥉
+                            {% else %}{{ forloop.counter }}
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-6 font-bold">{{ stat.user.first_name|default:stat.user.email }}</td>
+                        <td class="py-4 px-6 text-center">{{ stat.help_provided }}</td>
+                        <td class="py-4 px-6 text-center">{{ stat.resources_shared }}</td>
+                        <td class="py-4 px-6 text-center font-bold text-blue-600">{{ stat.points }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-4 px-6 text-center text-gray-500">Leaderboard is currently empty. Start contributing!</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

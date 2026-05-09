@@ -1,0 +1,28 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded shadow-md">
+    <h2 class="text-2xl font-bold mb-6">Create Project Group</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Group Name</label>
+            <input type="text" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+            <textarea name="description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" rows="3" required></textarea>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Related Course (Optional)</label>
+            <select name="course" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700">
+                <option value="">None</option>
+                {% for c in courses %}
+                    <option value="{{ c.id }}">{{ c.code }} - {{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">Create Group</button>
+    </form>
+</div>
+{% endblock %}

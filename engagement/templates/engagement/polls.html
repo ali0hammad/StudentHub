@@ -1,0 +1,47 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">Campus Polls</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for poll in polls %}
+            <div class="bg-white p-6 rounded shadow border border-gray-200">
+                <h3 class="text-xl font-bold mb-4">{{ poll.question }}</h3>
+
+                {% if poll.user_voted %}
+                    <div class="space-y-2">
+                        <p class="text-sm text-green-600 font-bold mb-2">You have voted.</p>
+                        {% for option in poll.options.all %}
+                            <div class="bg-gray-100 p-2 rounded flex justify-between items-center text-sm">
+                                <span>{{ option.text }}</span>
+                                <span class="font-bold text-gray-700">{{ option.votes.count }} votes</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <form action="{% url 'engagement:poll_vote' poll.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="space-y-2 mb-4">
+                            {% for option in poll.options.all %}
+                                <label class="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-50 rounded">
+                                    <input type="radio" name="option" value="{{ option.id }}" class="form-radio text-blue-600" required>
+                                    <span>{{ option.text }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">Vote</button>
+                    </form>
+                {% endif %}
+                <div class="text-xs text-gray-400 mt-4 text-right">
+                    Total votes: {{ poll.votes.count }} | Posted: {{ poll.created_at|date:"M d" }}
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-span-full">
+                <p class="text-gray-500 text-center py-8">No active polls at the moment.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
